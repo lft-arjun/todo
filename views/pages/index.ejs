@@ -1,6 +1,13 @@
-<h2>Loop</h2>
-<ul>
-    <% pages.forEach(function(page) { %>
-        <li><%= page.name %> - <%= page.url %></li>
-    <% }); %>
-</ul>
+<head>
+    <% include ../partials/header %>
+</head>
+<div class="container">
+	<div class="jumbotron">
+		<h2>Loop</h2>
+		<ul>
+		    <% pages.forEach(function(page) { %>
+		        <li><%= page.name %> - <%= page.url %></li>
+		    <% }); %>
+		</ul>
+	</div>
+</div>
