@@ -2,8 +2,6 @@ var models = require("../models");
 var express = require('express');
 var router = express.Router();
 
-
-
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -14,5 +12,8 @@ router.get('/detail/:id', function(req, res, next) {
   		// res.send(pages);
   		res.render('pages/index', { pages: pages });
   	});
+});
+router.get('/edit/:id', function(req, res, next) {
+	res.send('edit page');
 });
 module.exports = router;
