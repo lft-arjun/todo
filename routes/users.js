@@ -47,9 +47,10 @@ router.post('/register', function(req, res, next) {
     res.render('users/register', {errors: errors , data: postData});
     return;
   } else {
-  	var encryptedPass = bcrypt.hashSync(req.body.password, 32);
-
-  	res.send(encryptedPass)
+  	var encryptedPass = bcrypt.hashSync(req.body.password, 10);
+  	console.log(encryptedPass);
+  	res.redirect('/');
+  	// res.send(encryptedPass)
     // normal processing here
   }
 });
