@@ -5,9 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var validator = require('express-validator');
+var session      = require('express-session');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var flash    = require('connect-flash');
+
+
 
 var app = express();
 
@@ -23,10 +27,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(validator());
-
+//passport
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }, resave: true, saveUninitialized: true }))
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
+//model
+var Model = require('./models');
+//routes
+var routes = require('./routes/index');
+var users = require('./routes/users');
 app.use('/', routes);
 app.use('/users', users);
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
