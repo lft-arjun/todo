@@ -89,7 +89,8 @@ router.get('/list', middleware.authorize,  function(req, res, next) {
 
 router.get('/login', function(req, res) {
         // render the page and pass in any flash data if it exists
-        res.render('users/login', {email: '', errors: '', message: '' }); 
+       var message = req.flash('message');
+        res.render('users/login', {email: '', errors: '', message: message }); 
  });
 router.post('/login', function(req, res, next) {
 		// var email = req.body.email;
