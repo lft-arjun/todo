@@ -115,16 +115,17 @@ router.post('/login', function(req, res, next) {
     res.render('users/login', {errors: errors , email: email, message:''});
     return;
   } else {
-    models.users.findOne({email: email}).then(function(data) {
+    models.users.findOne({where: {email: email},}).then(function(data) {
       var user = data;
+      
       if(user === null) {
       	req.flash('message', 'Invalid username or password')
-        res.render('/users/login', {errors: errors , email: email, message:req.flash(message)});
+        res.redirect('/users/login');
       } else {
          user = data.toJSON();
          if(!bcrypt.compareSync(password, user.password)) {
          	req.flash('message', 'Invalid username or password')
-            res.render('/users/login', {errors: errors , email: email, message:req.flash(message)});
+            res.redirect('/users/login');
          } else {
          	req.session.user = user;
             res.redirect('/');
