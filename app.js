@@ -32,13 +32,19 @@ app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }, resave: tru
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
+app.use(function(req, res, next){
+  res.locals.user = req.session.user;
+  next();
+});
 //model
 var Model = require('./models');
 //routes
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var admins = require('./routes/admins');
 app.use('/', routes);
 app.use('/users', users);
+app.use('/admins', admins);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

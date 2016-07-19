@@ -129,7 +129,7 @@ router.post('/login', function(req, res, next) {
             res.redirect('/users/login');
          } else {
          	req.session.user = user;
-            res.redirect('/');
+            res.redirect('/admins/dashboard');
          }
       }
    });
