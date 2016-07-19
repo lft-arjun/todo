@@ -88,6 +88,10 @@ router.get('/list', middleware.authorize,  function(req, res, next) {
 });
 
 router.get('/login', function(req, res) {
+        if (req.session && req.session.user !== undefined) {
+            req.flash('message', 'Already logged in!');
+            res.redirect('/admins/dashboard');
+        }
         // render the page and pass in any flash data if it exists
        var message = req.flash('message');
         res.render('users/login', {email: '', errors: '', message: message }); 
