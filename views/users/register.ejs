@@ -55,11 +55,12 @@
 						</div>
                         <div class="form-group">
                             <label for="sel1">Role:</label>
-                            <select class="form-control" id="sel1" name="role">
-                                <option value="">Select Any</option>
-                                <option value="1">Admin</option>
-                                <option value="2">Author</option>
-                                <option value="3">User</option>
+							<select class="form-control" id="sel1" name="role">
+								<option value="">Select Any</option>
+								<% roles.forEach(function (role) { %>
+								<option value="<%= role.id%>"><%= role.name %></option>
+								<%})%>
+
                             </select>
                         </div>
 						<div class="form-group">

@@ -12,8 +12,6 @@ router.get('/', function(req, res, next) {
 });
 router.get('/detail/:id',[ middleware.authorize, middleware.admin] ,function(req, res, next) {
 	models.Page.findAll().then(function(pages) {
-    	// console.log(pages);
-  		// res.send(pages);
   		res.render('pages/index', { pages: pages });
   	});
 });
@@ -23,22 +21,28 @@ router.get('/edit/:id', middleware.authorize, function(req, res, next) {
 });
 //register display form
 router.get('/register', middleware.authorize, function(req, res, next) {
-	res.render('users/register', {errors: '', data: ''});
+    var roles =[];
+    models.roles.all().success(function (result) {
+        res.render('users/register', {errors: '', data: '', roles: result});
+    });
+
 });
 //save register post data into database
 router.post('/register', middleware.authorize, function(req, res, next) {
 	if (!req.body) return res.sendStatus(400);
-	
+
 	var name = req.body.name;
     var email = req.body.email;
     var address = req.body.address;
     var password = req.body.password;
+    var role = req.body.role;
     var profile_pic = req.body.profile_pic;
 
     var postData = {
     	name,
     	email,
-    	address
+    	address,
+        role
     };
 
   req.checkBody("name", "Enter a name.").notEmpty();
@@ -49,22 +53,29 @@ router.post('/register', middleware.authorize, function(req, res, next) {
 
   var errors = req.validationErrors();
   if (errors) {
-    res.render('users/register', {errors: errors , data: postData});
-    return;
+      models.roles.all().success(function (result) {
+          res.render('users/register', {errors: errors , data: postData, roles: result});
+      });
+
+      return;
   } else {
+     models.users.findOne({where: {email: email},}) .success(function (result) {
+            if(result) {
+                req.flash('message', 'Email already registered!')
+                res.redirect('/users/register');
+            }
+     });
   	// res.send(name + req.body.profile_pic);
   	var encryptedPass = bcrypt.hashSync(req.body.password, 10);
-  	console.log(encryptedPass);
-  	// res.redirect('/');
+
   	models.users.create({
   		'name': name,
   		'email' : email,
   		'password': encryptedPass,
   		'address': address,
-  		'role_id': 1
+  		'role_id': role ? role : 3
 
   	}).then(function(response){
-  		console.log('success', response);
   		req.flash('message', 'User successfully register!')
   		res.redirect('/users/list');
   	})
@@ -83,7 +94,6 @@ router.get('/list', middleware.authorize,  function(req, res, next) {
 
 	// return done(null, false, req.flash('message', 'Oops! Wrong password.'));
 	// });
-	// console.log(req.flash('message', 'teststgs'));
 	res.render('users/list', {data: '',  message: req.flash('message') });
 });
 
@@ -97,18 +107,6 @@ router.get('/login', function(req, res) {
         res.render('users/login', {email: '', errors: '', message: message }); 
  });
 router.post('/login', function(req, res, next) {
-		// var email = req.body.email;
-		// var password = req.body.password;
-		// models.users.findOne({ where: {email: email} }).then(function(users) {
-		// 	console.log(users);
-		// 	if (bcrypt.hashSync(password, 10) === users.password)
-  // 			// project will be the first entry of the Projects table with the title 'aProject' || null
-  //       	res.send('email'+ users.password); 
-		// })
-
-        // render the page and pass in any flash data if it exists
-        
-        // 
     var email = req.body.email;
 	var password = req.body.password;
 	
@@ -155,5 +153,6 @@ var notFound404 = function(req, res, next) {
    res.status(404);
    res.render('404', {title: '404 Not Found'});
 };
+
 
 module.exports = router;

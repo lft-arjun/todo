@@ -1,11 +1,11 @@
 {
   "name": "todo",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "main": "app.js",
   "scripts": {
-    "postinstall": "cd public && bower install",
-    "start": "node app.js"
+    "start": "node ./bin/www",
+    "postinstall": "cd public && bower install"
   },
   "dependencies": {
     "bcrypt": "^0.8.7",
@@ -31,6 +31,6 @@
   },
   "engines": {
     "node": "6.2.2",
-    "npm": "3.10.5"
+    "npm": "2.1.x"
   }
 }
